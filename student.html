@@ -439,6 +439,18 @@
     </div>
 
     <script>
+        // Constants
+        const ENCRYPTION_KEY = 'your-secure-encryption-key-here';  // 실제 운영 환경에서는 더 안전한 키 사용 필요
+        
+        // API 키 암호화 개선
+        function encryptApiKey(key) {
+            return CryptoJS.AES.encrypt(key, ENCRYPTION_KEY).toString();
+        }
+
+        function decryptApiKey(encryptedKey) {
+            return CryptoJS.AES.decrypt(encryptedKey, ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
+        }
+
         // 이벤트 핸들러와 비즈니스 로직 분리
         class SpeakingTutor {
             constructor() {
@@ -764,16 +776,6 @@
             const existingLogs = JSON.parse(localStorage.getItem(`logs_${currentSessionId}`) || '[]');
             existingLogs.push(logEntry);
             localStorage.setItem(`logs_${currentSessionId}`, JSON.stringify(existingLogs));
-        }
-
-        // API 키 암호화 개선
-        function encryptApiKey(key) {
-            // 실제 환경에서는 더 강력한 암호화 사용
-            return CryptoJS.AES.encrypt(key, process.env.ENCRYPTION_KEY).toString();
-        }
-
-        function decryptApiKey(encryptedKey) {
-            return CryptoJS.AES.decrypt(encryptedKey, process.env.ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
         }
 
         // 스캐폴드 기능들
