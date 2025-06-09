@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive AI Speaking Tutor - 교사용</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+            padding: 20px;
+            color: #1d1d1f;
+        }
+
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            font-weight: 400;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        .section h2 {
+            color: #1d1d1f;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1d1d1f;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .form-control::placeholder {
+            color: #86868b;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-primary {
+            background: #007aff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(0, 122, 255, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #8e8e93;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #6d6d70;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #34c759;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #28a745;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(52, 199, 89, 0.25);
+        }
+
+        .password-group {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #8e8e93;
+            font-size: 16px;
+            padding: 4px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .api-keys {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .session-info {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .session-info h4 {
+            color: #34c759;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .logs-table th,
+        .logs-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .logs-table th {
+            background: rgba(0, 0, 0, 0.02);
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .logs-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-info {
+            background: rgba(0, 122, 255, 0.1);
+            border: 1px solid rgba(0, 122, 255, 0.2);
+            color: #007aff;
+        }
+
+        .alert-success {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            color: #34c759;
+        }
+
+        .alert-error {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Apple-style smooth animations */
+        @media (prefers-reduced-motion: no-preference) {
+            * {
+                transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Adaptive AI Speaking Tutor</h1>
+            <p>교사용 관리 화면</p>
+        </div>
+
+        <div class="content">
+            <!-- 목표 표현 입력 섹션 -->
+            <div class="section">
+                <h2>📝 목표 표현 설정</h2>
+                <div class="form-group">
+                    <label for="targetExpression">Target Expression</label>
+                    <input type="text" id="targetExpression" class="form-control" 
+                           placeholder="예: I prefer ___ because ___">
+                </div>
+                <div class="form-group">
+                    <label for="languageFunction">Language Function</label>
+                    <input type="text" id="languageFunction" class="form-control" 
+                           placeholder="예: Expressing preferences">
+                </div>
+            </div>
+
+            <!-- 예시 대화 입력 섹션 -->
+            <div class="section">
+                <h2>💬 예시 대화</h2>
+                <div class="form-group">
+                    <label for="exampleDialogue">Teacher Example Dialogue</label>
+                    <textarea id="exampleDialogue" class="form-control" 
+                              placeholder="예:&#10;G: What do you prefer?&#10;S: I prefer pizza because it's delicious."></textarea>
+                </div>
+            </div>
+
+            <!-- API Key 관리 섹션 -->
+            <div class="section">
+                <h2>🔐 API Key 설정</h2>
+                <div class="api-keys">
+                    <div class="form-group">
+                        <label for="openaiKey">OpenAI API Key</label>
+                        <div class="password-group">
+                            <input type="password" id="openaiKey" class="form-control" 
+                                   placeholder="sk-...">
+                            <button type="button" class="password-toggle" onclick="togglePassword('openaiKey')">👁️</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="whisperKey">Whisper API Key</label>
+                        <div class="password-group">
+                            <input type="password" id="whisperKey" class="form-control" 
+                                   placeholder="sk-...">
+                            <button type="button" class="password-toggle" onclick="togglePassword('whisperKey')">👁️</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="elevenlabsKey">ElevenLabs API Key</label>
+                        <div class="password-group">
+                            <input type="password" id="elevenlabsKey" class="form-control" 
+                                   placeholder="el_...">
+                            <button type="button" class="password-toggle" onclick="togglePassword('elevenlabsKey')">👁️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GPT 프롬프트 생성 섹션 -->
+            <div class="section">
+                <h2>🧠 시스템 프롬프트</h2>
+                <button class="btn btn-primary" onclick="generateSystemPrompt()">
+                    ✨ 시나리오 생성
+                </button>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="systemPrompt">생성된 시스템 프롬프트 (수정 가능)</label>
+                    <textarea id="systemPrompt" class="form-control" style="min-height: 150px;" 
+                              placeholder="시나리오 생성 버튼을 클릭하여 자동 생성된 프롬프트가 여기에 표시됩니다."></textarea>
+                </div>
+            </div>
+
+            <!-- 세션 공유 섹션 -->
+            <div class="section">
+                <h2>🔗 세션 생성 및 공유</h2>
+                <button class="btn btn-success" onclick="createSession()">
+                    🚀 세션 생성
+                </button>
+                <div id="sessionResult" class="session-info hidden">
+                    <h4>✅ 세션이 생성되었습니다!</h4>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label for="sessionLink">학생용 접근 URL</label>
+                        <input type="text" id="sessionLink" class="form-control" readonly>
+                    </div>
+                    <p style="margin-top: 10px; color: #059669;">이 링크를 학생들에게 공유하세요.</p>
+                </div>
+            </div>
+
+            <!-- 학생 대화 로그 확인 섹션 -->
+            <div class="section">
+                <h2>📊 대화 로그 관리</h2>
+                <button class="btn btn-secondary" onclick="loadConversationLogs()">
+                    📋 대화 로그 불러오기
+                </button>
+                <div id="logsContainer" class="hidden">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>시간</th>
+                                <th>발화자</th>
+                                <th>내용</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API 키 유효성 검사
+        function validateApiKey(key, type) {
+            if (!key) return false;
+            switch(type) {
+                case 'openai':
+                    return key.startsWith('sk-') && key.length > 20;
+                case 'whisper':
+                    return key.startsWith('sk-') && key.length > 20;
+                case 'elevenlabs':
+                    return key.startsWith('el_') && key.length > 20;
+                default:
+                    return false;
+            }
+        }
+
+        // 로딩 상태 표시
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.disabled = true;
+            element.innerHTML = '⌛ 로딩 중...';
+        }
+
+        function hideLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.disabled = false;
+            element.innerHTML = element.getAttribute('data-original-text');
+        }
+
+        // 암호화/복호화 간단 구현 (실제 환경에서는 더 강력한 암호화 사용)
+        function simpleEncrypt(text) {
+            if (!text) return '';
+            return btoa(text);
+        }
+
+        function simpleDecrypt(text) {
+            if (!text) return '';
+            try {
+                return atob(text);
+            } catch {
+                return text;
+            }
+        }
+
+        // 비밀번호 토글 기능
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const type = field.getAttribute('type');
+            field.setAttribute('type', type === 'password' ? 'text' : 'password');
+        }
+
+        // 입력값 저장 (실시간)
+        function saveInputs() {
+            const fields = ['targetExpression', 'languageFunction', 'exampleDialogue'];
+            fields.forEach(field => {
+                const value = document.getElementById(field).value;
+                localStorage.setItem(`teacher_${field}`, value);
+            });
+
+            // API Keys 저장 (암호화)
+            const apiKeys = ['openaiKey', 'whisperKey', 'elevenlabsKey'];
+            apiKeys.forEach(key => {
+                const value = document.getElementById(key).value;
+                if (value) {
+                    localStorage.setItem(key, simpleEncrypt(value));
+                }
+            });
+        }
+
+        // 입력값 복원
+        function loadInputs() {
+            const fields = ['targetExpression', 'languageFunction', 'exampleDialogue'];
+            fields.forEach(field => {
+                const value = localStorage.getItem(`teacher_${field}`);
+                if (value) {
+                    document.getElementById(field).value = value;
+                }
+            });
+
+            // API Keys 복원 (복호화)
+            const apiKeys = ['openaiKey', 'whisperKey', 'elevenlabsKey'];
+            apiKeys.forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value) {
+                    document.getElementById(key).value = simpleDecrypt(value);
+                }
+            });
+        }
+
+        // 시스템 프롬프트 생성
+        async function generateSystemPrompt() {
+            const expr = document.getElementById('targetExpression').value;
+            const func = document.getElementById('languageFunction').value;
+            const example = document.getElementById('exampleDialogue').value;
+
+            if (!expr || !func || !example) {
+                alert('목표 표현, 언어 기능, 예시 대화를 모두 입력해주세요.');
+                return;
+            }
+
+            const button = document.querySelector('button[onclick="generateSystemPrompt()"]');
+            button.setAttribute('data-original-text', button.innerHTML);
+            showLoading(button.id);
+
+            try {
+                const systemPrompt = `You are an English tutor helping a middle school student practice the target expression: "${expr}".
+
+The language function we're focusing on is: "${func}".
+
+Refer to the following teacher-provided example dialogue:
+${example}
+
+Instructions:
+1. Ask related, slightly more complex follow-up questions that encourage the student to use the target expression
+2. Provide scaffolding only if the student pauses or struggles
+3. Keep responses encouraging and age-appropriate for middle school students
+4. Guide the conversation naturally to help students practice the target expression in various contexts
+5. If a student makes mistakes, gently correct them and provide the correct form
+6. Limit your responses to 2-3 sentences to maintain engagement`;
+
+                document.getElementById('systemPrompt').value = systemPrompt;
+                saveInputs();
+            } catch (error) {
+                console.error('Error generating system prompt:', error);
+                alert('시스템 프롬프트 생성 중 오류가 발생했습니다.');
+            } finally {
+                hideLoading(button.id);
+            }
+        }
+
+        // 세션 생성
+        async function createSession() {
+            const prompt = document.getElementById('systemPrompt').value;
+            if (!prompt.trim()) {
+                alert('먼저 시스템 프롬프트를 생성해주세요.');
+                return;
+            }
+
+            // API 키 확인
+            const openaiKey = document.getElementById('openaiKey').value;
+            if (!validateApiKey(openaiKey, 'openai')) {
+                alert('유효한 OpenAI API Key를 입력해주세요.');
+                return;
+            }
+
+            const button = document.querySelector('button[onclick="createSession()"]');
+            button.setAttribute('data-original-text', button.innerHTML);
+            showLoading(button.id);
+
+            try {
+                const sessionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+                const sessionData = {
+                    prompt: prompt,
+                    targetExpression: document.getElementById('targetExpression').value,
+                    languageFunction: document.getElementById('languageFunction').value,
+                    exampleDialogue: document.getElementById('exampleDialogue').value,
+                    apiKeys: {
+                        openai: simpleEncrypt(openaiKey),
+                        whisper: simpleEncrypt(document.getElementById('whisperKey').value || openaiKey),
+                        elevenlabs: simpleEncrypt(document.getElementById('elevenlabsKey').value)
+                    },
+                    createdAt: new Date().toISOString()
+                };
+
+                localStorage.setItem(`scenario_${sessionId}`, JSON.stringify(sessionData));
+
+                const studentUrl = `${window.location.origin}${window.location.pathname.replace('teacher.html', 'student.html')}?session=${sessionId}`;
+                document.getElementById('sessionLink').value = studentUrl;
+                document.getElementById('sessionResult').classList.remove('hidden');
+
+                // 링크 복사 기능 추가
+                document.getElementById('sessionLink').onclick = function() {
+                    this.select();
+                    document.execCommand('copy');
+                    alert('링크가 클립보드에 복사되었습니다!');
+                };
+            } catch (error) {
+                console.error('Error creating session:', error);
+                alert('세션 생성 중 오류가 발생했습니다.');
+            } finally {
+                hideLoading(button.id);
+            }
+        }
+
+        // 대화 로그 불러오기
+        async function loadConversationLogs() {
+            const sessionId = prompt('불러올 세션 ID를 입력하세요 (또는 전체 URL):');
+            if (!sessionId) return;
+
+            // URL에서 세션 ID 추출
+            let actualSessionId = sessionId;
+            if (sessionId.includes('session=')) {
+                actualSessionId = sessionId.split('session=')[1].split('&')[0];
+            }
+
+            const button = document.querySelector('button[onclick="loadConversationLogs()"]');
+            button.setAttribute('data-original-text', button.innerHTML);
+            showLoading(button.id);
+
+            try {
+                const data = localStorage.getItem(`logs_${actualSessionId}`);
+                if (!data) {
+                    alert('해당 세션의 대화 기록이 없습니다.');
+                    return;
+                }
+
+                const logs = JSON.parse(data);
+                const tbody = document.getElementById('logsTableBody');
+                tbody.innerHTML = '';
+
+                logs.forEach(log => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = new Date(log.timestamp).toLocaleString('ko-KR');
+                    row.insertCell(1).textContent = log.speaker;
+                    row.insertCell(2).textContent = log.text;
+                });
+
+                document.getElementById('logsContainer').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error loading conversation logs:', error);
+                alert('대화 로그를 불러오는 중 오류가 발생했습니다.');
+            } finally {
+                hideLoading(button.id);
+            }
+        }
+
+        // 입력 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInputs();
+
+            // 자동 저장 설정
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', saveInputs);
+                input.addEventListener('change', saveInputs);
+            });
+
+            // 버튼에 ID 추가
+            document.querySelector('button[onclick="generateSystemPrompt()"]').id = 'generatePromptBtn';
+            document.querySelector('button[onclick="createSession()"]').id = 'createSessionBtn';
+            document.querySelector('button[onclick="loadConversationLogs()"]').id = 'loadLogsBtn';
+        });
+    </script>
+</body>
+</html>
