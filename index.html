@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI 기반 영어 말하기 연습 애플리케이션">
+    <title>Adaptive AI Speaking Tutor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Status Bar -->
+        <div class="status-bar" role="status">
+            <div class="time" id="currentTime" aria-live="polite">9:41</div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="app-icon" role="img" aria-label="앱 아이콘">🎯</div>
+            <h1 class="app-title">AI Speaking Tutor</h1>
+            <p class="app-subtitle">중등 영어 말하기 연습</p>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+            <section class="section">
+                <h2 class="section-title">시작하기</h2>
+                <div class="role-cards">
+                    <button 
+                        class="role-card" 
+                        onclick="showPasswordModal()"
+                        aria-label="교사 페이지로 이동"
+                    >
+                        <div class="role-card-content">
+                            <div class="role-icon teacher-icon" role="img" aria-label="교사 아이콘">👨‍🏫</div>
+                            <div class="role-info">
+                                <div class="role-title">교사</div>
+                                <div class="role-description">시나리오 생성 및 관리</div>
+                            </div>
+                            <div class="chevron" aria-hidden="true">›</div>
+                        </div>
+                    </button>
+
+                    <button 
+                        class="role-card" 
+                        onclick="goToStudentPage()"
+                        aria-label="학생 페이지로 이동"
+                    >
+                        <div class="role-card-content">
+                            <div class="role-icon student-icon" role="img" aria-label="학생 아이콘">🎓</div>
+                            <div class="role-info">
+                                <div class="role-title" id="studentTitle">학생</div>
+                                <div class="role-description" id="studentDesc">AI와 영어 대화 연습</div>
+                            </div>
+                            <div class="chevron" aria-hidden="true">›</div>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <section class="features-section">
+                <h3 class="features-title">주요 기능</h3>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-bullet" aria-hidden="true"></div>
+                        <span>실시간 음성 인식 및 발음 연습</span>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-bullet" aria-hidden="true"></div>
+                        <span>개인맞춤형 대화 시나리오</span>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-bullet" aria-hidden="true"></div>
+                        <span>AI 기반 즉시 피드백 제공</span>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-bullet" aria-hidden="true"></div>
+                        <span>학습 진도 추적 및 분석</span>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-bullet" aria-hidden="true"></div>
+                        <span>다양한 학습 지원 도구</span>
+                    </li>
+                </ul>
+            </section>
+        </main>
+
+        <!-- Home Indicator -->
+        <div class="home-indicator" role="presentation">
+            <div class="home-bar"></div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div 
+        class="modal-overlay" 
+        id="modalOverlay" 
+        onclick="closePasswordModal(event)"
+        role="dialog"
+        aria-labelledby="modalTitle"
+        aria-describedby="modalMessage"
+    >
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">교사 인증</h2>
+                <p class="modal-message" id="modalMessage">교사용 페이지 접근을 위해 비밀번호를 입력해주세요.</p>
+            </div>
+            <div class="modal-input-container">
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    class="password-input" 
+                    placeholder="비밀번호"
+                    maxlength="10"
+                    aria-label="비밀번호 입력"
+                    aria-invalid="false"
+                >
+                <div class="error-text" id="errorText" role="alert">잘못된 비밀번호입니다.</div>
+            </div>
+            <div class="modal-buttons">
+                <button 
+                    class="modal-button" 
+                    onclick="closePasswordModal()"
+                    aria-label="취소"
+                >취소</button>
+                <button 
+                    class="modal-button" 
+                    onclick="checkPassword()"
+                    aria-label="확인"
+                >확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
