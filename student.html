@@ -444,11 +444,28 @@
         
         // API 키 암호화 개선
         function encryptApiKey(key) {
-            return CryptoJS.AES.encrypt(key, ENCRYPTION_KEY).toString();
+            try {
+                if (!key) return null;
+                return CryptoJS.AES.encrypt(key, ENCRYPTION_KEY).toString();
+            } catch (error) {
+                console.error('API 키 암호화 오류:', error);
+                return null;
+            }
         }
 
         function decryptApiKey(encryptedKey) {
-            return CryptoJS.AES.decrypt(encryptedKey, ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
+            try {
+                if (!encryptedKey) return null;
+                const decrypted = CryptoJS.AES.decrypt(encryptedKey, ENCRYPTION_KEY);
+                const decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
+                if (!decryptedStr) {
+                    throw new Error('Invalid decryption result');
+                }
+                return decryptedStr;
+            } catch (error) {
+                console.error('API 키 복호화 오류:', error);
+                return null;
+            }
         }
 
         // 이벤트 핸들러와 비즈니스 로직 분리
@@ -632,9 +649,13 @@
         // Whisper API 호출
         async function callWhisperAPI(audioBlob) {
             try {
+                if (!sessionData || !sessionData.apiKeys || !sessionData.apiKeys.whisper) {
+                    throw new Error('Whisper API 키가 없습니다.');
+                }
+
                 const apiKey = decryptApiKey(sessionData.apiKeys.whisper);
                 if (!apiKey) {
-                    throw new Error('Whisper API 키가 없습니다.');
+                    throw new Error('Whisper API 키 복호화에 실패했습니다.');
                 }
 
                 const formData = new FormData();
@@ -657,6 +678,7 @@
                 return result.text;
             } catch (error) {
                 console.error('Whisper API 오류:', error);
+                showStatus('error', error.message || '음성 인식 중 오류가 발생했습니다.');
                 return null;
             }
         }
@@ -712,8 +734,7 @@
         // TTS 재생
         async function playTTS(text) {
             try {
-                const apiKey = decryptApiKey(sessionData.apiKeys.elevenlabs);
-                if (!apiKey) {
+                if (!sessionData || !sessionData.apiKeys || !sessionData.apiKeys.elevenlabs) {
                     // ElevenLabs API가 없으면 브라우저 TTS 사용
                     const utterance = new SpeechSynthesisUtterance(text);
                     utterance.lang = 'en-US';
@@ -721,6 +742,11 @@
                     utterance.pitch = 1.0;
                     speechSynthesis.speak(utterance);
                     return;
+                }
+
+                const apiKey = decryptApiKey(sessionData.apiKeys.elevenlabs);
+                if (!apiKey) {
+                    throw new Error('ElevenLabs API 키 복호화에 실패했습니다.');
                 }
 
                 // ElevenLabs API 호출
@@ -748,16 +774,15 @@
                     audio.play();
                     currentAudioUrl = audioUrl;
                 } else {
-                    // ElevenLabs 실패시 브라우저 TTS 폴백
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'en-US';
-                    speechSynthesis.speak(utterance);
+                    throw new Error(`ElevenLabs API 오류: ${response.status}`);
                 }
             } catch (error) {
                 console.error('TTS 오류:', error);
                 // 오류 시 브라우저 TTS 폴백
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
                 speechSynthesis.speak(utterance);
             }
         }
