@@ -1,0 +1,381 @@
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Helvetica, Arial, sans-serif;
+    background: #f2f2f7;
+    min-height: 100vh;
+    color: #1c1c1e;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container */
+.container {
+    max-width: 414px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Status Bar */
+.status-bar {
+    height: 44px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    border-bottom: 0.5px solid rgba(60, 60, 67, 0.1);
+}
+
+.time {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1c1c1e;
+    letter-spacing: -0.41px;
+}
+
+/* Header */
+.header {
+    padding: 60px 20px 40px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.app-icon {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #1c1c1e 0%, #48484a 100%);
+    border-radius: 26px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.app-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #1c1c1e;
+    margin-bottom: 8px;
+    letter-spacing: -0.41px;
+    line-height: 1.2;
+}
+
+.app-subtitle {
+    font-size: 19px;
+    font-weight: 400;
+    color: #8e8e93;
+    line-height: 1.3;
+    letter-spacing: -0.45px;
+}
+
+/* Content */
+.content {
+    flex: 1;
+    padding: 0 20px 40px;
+}
+
+.section {
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1c1c1e;
+    margin-bottom: 16px;
+    letter-spacing: -0.26px;
+}
+
+/* Role Cards */
+.role-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.role-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    border: 0.5px solid rgba(60, 60, 67, 0.1);
+    text-align: left;
+    font-family: inherit;
+}
+
+.role-card:active {
+    transform: scale(0.98);
+    background: #f2f2f7;
+}
+
+.role-card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.role-icon {
+    width: 48px;
+    height: 48px;
+    background: #f2f2f7;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.teacher-icon {
+    background: #1c1c1e;
+}
+
+.student-icon {
+    background: #8e8e93;
+}
+
+.role-info {
+    flex: 1;
+}
+
+.role-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1c1c1e;
+    margin-bottom: 2px;
+    letter-spacing: -0.41px;
+}
+
+.role-description {
+    font-size: 15px;
+    font-weight: 400;
+    color: #8e8e93;
+    line-height: 1.3;
+    letter-spacing: -0.24px;
+}
+
+.chevron {
+    color: #c7c7cc;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Features Section */
+.features-section {
+    background: #f2f2f7;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 8px;
+}
+
+.features-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1c1c1e;
+    margin-bottom: 12px;
+    letter-spacing: -0.41px;
+}
+
+.feature-list {
+    list-style: none;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 15px;
+    color: #48484a;
+    line-height: 1.4;
+    letter-spacing: -0.24px;
+}
+
+.feature-item:last-child {
+    margin-bottom: 0;
+}
+
+.feature-bullet {
+    width: 6px;
+    height: 6px;
+    background: #8e8e93;
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: #ffffff;
+    border-radius: 14px;
+    width: 270px;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.modal-overlay.show .modal {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+    padding: 20px 16px 8px;
+    text-align: center;
+}
+
+.modal-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1c1c1e;
+    margin-bottom: 4px;
+    letter-spacing: -0.41px;
+}
+
+.modal-message {
+    font-size: 13px;
+    color: #8e8e93;
+    line-height: 1.4;
+    letter-spacing: -0.08px;
+}
+
+.modal-input-container {
+    padding: 12px 16px 20px;
+}
+
+.password-input {
+    width: 100%;
+    height: 44px;
+    background: #f2f2f7;
+    border: none;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+    color: #1c1c1e;
+    font-family: inherit;
+}
+
+.password-input:focus {
+    outline: none;
+    background: #e5e5ea;
+}
+
+.password-input.error {
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+}
+
+.error-text {
+    font-size: 13px;
+    color: #ff3b30;
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: -0.08px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.error-text.show {
+    opacity: 1;
+}
+
+.modal-buttons {
+    border-top: 0.5px solid rgba(60, 60, 67, 0.2);
+    display: flex;
+}
+
+.modal-button {
+    flex: 1;
+    height: 44px;
+    border: none;
+    background: none;
+    font-size: 17px;
+    font-weight: 400;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.1s ease;
+    letter-spacing: -0.41px;
+}
+
+.modal-button:active {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.modal-button:first-child {
+    border-right: 0.5px solid rgba(60, 60, 67, 0.2);
+    color: #8e8e93;
+}
+
+.modal-button:last-child {
+    color: #007aff;
+    font-weight: 600;
+}
+
+/* Home Indicator */
+.home-indicator {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-bar {
+    width: 134px;
+    height: 5px;
+    background: #1c1c1e;
+    border-radius: 3px;
+    opacity: 0.3;
+}
+
+/* Media Queries */
+@media (max-width: 414px) {
+    .container {
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 415px) {
+    .container {
+        border-radius: 0;
+        max-width: 414px;
+        margin: 20px auto;
+        border-radius: 40px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+} 
