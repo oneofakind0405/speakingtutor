@@ -442,26 +442,16 @@
         // Constants
         const ENCRYPTION_KEY = 'your-secure-encryption-key-here';  // 실제 운영 환경에서는 더 안전한 키 사용 필요
         
-        // API 키 암호화 개선
+        // API 키 암호화/복호화
         function encryptApiKey(key) {
-            try {
-                if (!key) return null;
-                return CryptoJS.AES.encrypt(key, ENCRYPTION_KEY).toString();
-            } catch (error) {
-                console.error('API 키 암호화 오류:', error);
-                return null;
-            }
+            if (!key) return '';
+            return btoa(key);
         }
 
         function decryptApiKey(encryptedKey) {
+            if (!encryptedKey) return '';
             try {
-                if (!encryptedKey) return null;
-                const decrypted = CryptoJS.AES.decrypt(encryptedKey, ENCRYPTION_KEY);
-                const decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
-                if (!decryptedStr) {
-                    throw new Error('Invalid decryption result');
-                }
-                return decryptedStr;
+                return atob(encryptedKey);
             } catch (error) {
                 console.error('API 키 복호화 오류:', error);
                 return null;
